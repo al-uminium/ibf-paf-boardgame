@@ -9,6 +9,7 @@ import javax.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ibf.paf.boardgame.Utils;
 import ibf.paf.boardgame.repository.BoardGameRepo;
 
 @Service
@@ -16,8 +17,9 @@ public class BoardGameService {
   @Autowired 
   private BoardGameRepo bgRepo; 
 
+  @Autowired private Utils utils; 
+
   public JsonObject getGames (Integer limit, Integer offset) {
-    JsonArrayBuilder gamesJsonArray = Json.createArrayBuilder();
 
     if (limit == null) {
       limit = 25; 
@@ -28,22 +30,16 @@ public class BoardGameService {
     }
 
     List<Document> queryList = bgRepo.getBoardGames(limit, offset); 
-    for (Document document : queryList) {
-      Integer gid = document.getInteger("gid");
-      String name = document.getString("name");
-      gamesJsonArray.add(Json.createObjectBuilder()
-                    .add("game_id", gid)
-                    .add("name", name));
-    }
-
-    JsonObject jsonResp = Json.createObjectBuilder()
-                                .add("games", gamesJsonArray)
-                                .add("offset", offset)
-                                .add("limit", limit)
-                                .add("total", limit)
-                                .add("timestamp", new Timestamp(System.currentTimeMillis()).toString())
-                                .build();
+    JsonObject jsonResp = utils.generateJsonResponse(queryList, offset, limit);
 
     return jsonResp;
   }
+
+  public JsonObject getGamesByRank (Integer limit, Integer offset) {
+    List<Document> queryList = bgRepo.getBoardGamesByRank(limit, offset);
+    JsonObject jsonResp = utils.generateJsonResponse(queryList, offset, limit);
+    return jsonResp; 
+  }
+
+
 }

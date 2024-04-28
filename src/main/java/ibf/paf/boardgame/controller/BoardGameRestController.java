@@ -23,11 +23,21 @@ public class BoardGameRestController {
   @Autowired private Utils utils;
   
   @GetMapping("/games")
-  public ResponseEntity<Object> getMethodName(@RequestBody(required = false) String payload) {
+  public ResponseEntity<Object> getGames(@RequestBody(required = false) String payload) {
 
     Map<String, Integer> payloadParameters = utils.getLimitAndOffset(payload);
 
     JsonObject jsonResponse = svc.getGames(payloadParameters.get("limit"), payloadParameters.get("offset"));
+    return ResponseEntity.ok(jsonResponse.toString());
+  }
+  
+  @GetMapping("/games/rank")
+  public ResponseEntity<Object> getGamesByRank(@RequestBody(required = false) String payload) {
+
+    Map<String, Integer> payloadParameters = utils.getLimitAndOffset(payload);
+
+    JsonObject jsonResponse = svc.getGamesByRank(payloadParameters.get("limit"), payloadParameters.get("offset"));
+
     return ResponseEntity.ok(jsonResponse.toString());
   }
   
