@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
+import ibf.paf.boardgame.repository.Constants;
+
 @Configuration
 public class MongoConfig {
   
@@ -17,6 +19,6 @@ public class MongoConfig {
   @Bean
   public MongoTemplate createMongoTemplate() {
     MongoClient client = MongoClients.create(mongoUri); 
-    return new MongoTemplate(client, "boardgame");
+    return new MongoTemplate(client, Constants.DB_NAME);
   }
 }
