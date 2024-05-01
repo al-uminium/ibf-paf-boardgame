@@ -15,31 +15,29 @@ import ibf.paf.boardgame.repository.BoardGameRepo;
 @Service
 public class BoardGameService {
   @Autowired 
-  private BoardGameRepo bgRepo; 
+  private BoardGameRepo bgRepo;
+  private Integer limit = 25; 
+  private Integer offset = 0;
 
   @Autowired private Utils utils; 
 
   public JsonObject getGames (Integer limit, Integer offset) {
-
-    if (limit == null) {
-      limit = 25; 
-    }
-
-    if (offset == null) {
-      offset = 0; 
-    }
-
-    List<Document> queryList = bgRepo.getBoardGames(limit, offset); 
+    List<Document> queryList = bgRepo.getBoardGames(limit==null ? limit : this.limit, offset==null ? offset : this.offset); 
     JsonObject jsonResp = utils.generateJsonResponse(queryList, offset, limit);
 
     return jsonResp;
   }
 
   public JsonObject getGamesByRank (Integer limit, Integer offset) {
-    List<Document> queryList = bgRepo.getBoardGamesByRank(limit, offset);
+    List<Document> queryList = bgRepo.getBoardGamesByRank(limit==null ? limit : this.limit, offset==null ? offset : this.offset);
     JsonObject jsonResp = utils.generateJsonResponse(queryList, offset, limit);
     return jsonResp; 
   }
 
-
+  public JsonObject getGameById(Integer gid) {
+    System.out.println(gid);
+    List<Document> queryList = bgRepo.getGameById(gid);
+    JsonObject resp = utils.generateGameIDResponse(queryList.getFirst());
+    return resp; 
+  }
 }

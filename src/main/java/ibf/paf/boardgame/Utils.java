@@ -35,6 +35,20 @@ public class Utils {
     }
   }
 
+  public Map<String, Integer> getGameID(String payload) {
+    try {
+      JsonReader reader = Json.createReader(new StringReader(payload));
+      JsonObject jsonPayload = reader.readObject();
+      Map<String, Integer> payloadParameter = new HashMap<>();
+      payloadParameter.put("gid", jsonPayload.getInt("game_id"));
+      return payloadParameter;
+    } catch (NullPointerException e) {
+      Map<String, Integer> payloadParameter = new HashMap<>();
+      payloadParameter.put("gid", null);
+      return payloadParameter;
+    }
+  }
+
   public JsonObject generateJsonResponse(List<Document> queryList, Integer offset, Integer limit) {
     JsonArrayBuilder gamesJsonArray = Json.createArrayBuilder();
     for (Document document : queryList) {
@@ -54,5 +68,20 @@ public class Utils {
                                 .build();
 
     return jsonResp;
+  }
+
+  public JsonObject generateGameIDResponse(Document game) {
+    JsonObject resp = Json.createObjectBuilder()
+                            .add("game_id", game.getInteger("game_id"))
+                            .add("name", game.getString("name"))
+                            .add("year", game.getInteger("year"))
+                            .add("ranking", game.getInteger("ranking"))
+                            .add("average", game.getDouble("average"))
+                            .add("users_rated", game.getInteger("users_rated"))
+                            .add("url", game.getString("url"))
+                            .add("thumbnail", game.getString("thumbnail"))
+                            .add("timestamp", new Timestamp(System.currentTimeMillis()).toString())
+                            .build();
+    return resp; 
   }
 }
